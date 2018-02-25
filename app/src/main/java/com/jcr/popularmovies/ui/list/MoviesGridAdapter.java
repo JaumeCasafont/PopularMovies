@@ -1,22 +1,16 @@
-package com.jcr.popularmovies;
+package com.jcr.popularmovies.ui.list;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.data.MovieModel;
 import com.jcr.popularmovies.utilities.ImageUtils;
 import com.squareup.picasso.Picasso;
-
-import java.util.Collection;
-import java.util.List;
 
 
 public class MoviesGridAdapter extends ArrayAdapter<MovieModel> {

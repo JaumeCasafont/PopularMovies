@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="pref_color_option_labels">
+        <item>@string/pref_sort_criteria_label_rated</item>
+        <item>@string/pref_sort_criteria_label_popular</item>
+    </array>
+
+    <array name="pref_color_option_values">
+        <item>@string/pref_sort_criteria_rated_value</item>
+        <item>@string/pref_sort_criteria_popular_value</item>
+    </array>
+</resources>

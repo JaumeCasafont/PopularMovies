@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jcr.popularmovies.DetailActivity">
+    tools:context="com.jcr.popularmovies.ui.detail.DetailActivity">
 
 </android.support.constraint.ConstraintLayout>

@@ -1,10 +1,11 @@
-package com.jcr.popularmovies;
+package com.jcr.popularmovies.ui.list;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,19 +15,23 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.jcr.popularmovies.ui.detail.DetailActivity;
+import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.data.MovieModel;
+import com.jcr.popularmovies.ui.settings.SettingsActivity;
 import com.jcr.popularmovies.utilities.JsonParserUtils;
 import com.jcr.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final String MOVIE_DETAILS_KEY = "movie_key";
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String MOVIES_KEY = "movies";
+    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 
     private GridView mGridView;
     private MoviesGridAdapter mMoviesAdapter;
@@ -53,8 +58,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        if (mMovies == null) {
-            new FetchMoviesTask().execute("top_rated");
+        if (mMovies == null || PREFERENCES_HAVE_BEEN_UPDATED) {
+            SharedPreferences prefs = PreferenceManager
+                    .getDefaultSharedPreferences(this);
+            String keyForSortCriteria = getString(R.string.pref_sort_criteria_key);
+            String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
+
+            String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
+            new FetchMoviesTask().execute(sortCriteria);
+            PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
     }
 
@@ -92,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent startSettingsActivity = new Intent(this, DetailActivity.class);
+            Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(startSettingsActivity);
             return true;
         }
@@ -142,5 +154,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 mErrorMessageDisplay.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        PREFERENCES_HAVE_BEEN_UPDATED = true;
     }
 }

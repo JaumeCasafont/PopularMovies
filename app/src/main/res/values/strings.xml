@@ -3,5 +3,18 @@
     <string name="error_message">
         An error has occurred. Please try again later
     </string>
+    <string name="movie_details">Details</string>
     <string name="action_settings">Settings</string>
+
+    <!-- - - - - - - - - - - - - - - -
+          - Used by Preferences  -
+          - - - - - - - - - - - - - - - -->
+    <string name="pref_sort_criteria_key" translatable="false">criteria</string>
+    <string name="pref_sort_criteria_label">Sort Criteria</string>
+
+    <string name="pref_sort_criteria_label_rated">Top Rated</string>
+    <string name="pref_sort_criteria_label_popular">Most Popular</string>
+
+    <string name="pref_sort_criteria_rated_value" translatable="false">top_rated</string>
+    <string name="pref_sort_criteria_popular_value" translatable="false">popular</string>
 </resources>
