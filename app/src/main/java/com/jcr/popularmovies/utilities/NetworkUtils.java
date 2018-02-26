@@ -20,13 +20,11 @@ import android.util.Log;
 
 import com.jcr.popularmovies.BuildConfig;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 import java.util.Scanner;
 
 /**
@@ -38,7 +36,7 @@ public final class NetworkUtils {
 
     private static final String BASE_THEMOVIEDB_URL = "http://api.themoviedb.org/3/movie/";
 
-    final static String API_KEY_PARAM = "api_key";
+    private final static String API_KEY_PARAM = "api_key";
 
     public static URL buildUrl(String criteria) {
         Uri builtUri = Uri.parse(BASE_THEMOVIEDB_URL + criteria).buildUpon()

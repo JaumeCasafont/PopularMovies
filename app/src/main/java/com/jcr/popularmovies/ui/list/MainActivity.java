@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static final String MOVIE_DETAILS_KEY = "movie_key";
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String MOVIES_KEY = "movies";
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
 

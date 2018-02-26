@@ -15,6 +15,9 @@ buildscript {
     }
 }
 
+ext.support_version = "27.0.2"
+ext.constraint_layout_version = "1.0.2"
+
 allprojects {
     repositories {
         google()

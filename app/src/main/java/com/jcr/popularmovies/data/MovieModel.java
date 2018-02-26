@@ -193,7 +193,7 @@ public class MovieModel implements Parcelable {
 		this.originalTitle = in.readString();
 		this.video = in.readByte() != 0;
 		this.title = in.readString();
-		this.genreIds = new ArrayList<Integer>();
+		this.genreIds = new ArrayList<>();
 		in.readList(this.genreIds, Integer.class.getClassLoader());
 		this.posterPath = in.readString();
 		this.backdropPath = in.readString();

@@ -1,6 +1,7 @@
 package com.jcr.popularmovies.ui.list;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,14 @@ import com.squareup.picasso.Picasso;
 
 
 public class MoviesGridAdapter extends ArrayAdapter<MovieModel> {
-    private static final String LOG_TAG = MoviesGridAdapter.class.getSimpleName();
 
-    public MoviesGridAdapter(Activity context) {
+    MoviesGridAdapter(Activity context) {
         super(context, 0);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         MovieModel movie = getItem(position);
 
         if (convertView == null) {
@@ -29,8 +30,10 @@ public class MoviesGridAdapter extends ArrayAdapter<MovieModel> {
                     R.layout.movie_item, parent, false);
         }
 
-        ImageView moviePoster = convertView.findViewById(R.id.movie_poster_iv);
-        Picasso.with(getContext()).load(ImageUtils.generatePosterUrl(movie.getPosterPath())).into(moviePoster);
+        if (movie != null) {
+            ImageView moviePoster = convertView.findViewById(R.id.movie_poster_iv);
+            Picasso.with(getContext()).load(ImageUtils.generatePosterUrl(movie.getPosterPath())).into(moviePoster);
+        }
 
         return convertView;
     }

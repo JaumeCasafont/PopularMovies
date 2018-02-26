@@ -6,8 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public final class JsonParserUtils {
 
     private static final String MOVIE_RESULTS = "results";
