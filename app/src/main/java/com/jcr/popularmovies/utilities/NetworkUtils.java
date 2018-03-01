@@ -37,10 +37,12 @@ public final class NetworkUtils {
     private static final String BASE_THEMOVIEDB_URL = "http://api.themoviedb.org/3/movie/";
 
     private final static String API_KEY_PARAM = "api_key";
+    private final static String PAGE = "page";
 
-    public static URL buildUrl(String criteria) {
+    public static URL buildUrl(String criteria, String page) {
         Uri builtUri = Uri.parse(BASE_THEMOVIEDB_URL + criteria).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, BuildConfig.THEMOVIEDB_API_KEY)
+                .appendQueryParameter(PAGE, page)
                 .build();
 
         URL url = null;

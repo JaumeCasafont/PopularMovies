@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final String MOVIES_KEY = "movies";
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
+    private static final int FIRST_PAGE = 1;
 
     private GridView mGridView;
     private MoviesGridAdapter mMoviesAdapter;
@@ -52,21 +53,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mMoviesAdapter = new MoviesGridAdapter(MainActivity.this);
         mGridView.setAdapter(mMoviesAdapter);
         mGridView.setOnItemClickListener(this);
+        mGridView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                loadData(page);
+                return true;
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (mMovies == null || PREFERENCES_HAVE_BEEN_UPDATED) {
-            SharedPreferences prefs = PreferenceManager
-                    .getDefaultSharedPreferences(this);
-            String keyForSortCriteria = getString(R.string.pref_sort_criteria_key);
-            String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
-
-            String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
-            new FetchMoviesTask().execute(sortCriteria);
+            loadData(FIRST_PAGE);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
+    }
+
+    private void loadData(int page) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        String keyForSortCriteria = getString(R.string.pref_sort_criteria_key);
+        String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
+
+        String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
+        new FetchMoviesTask().execute(sortCriteria, String.valueOf(page));
     }
 
     @Override
@@ -84,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        MovieModel movieModel = mMovies[position];
+        MovieModel movieModel = mMoviesAdapter.getItem(position);
         Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
         intentToStartDetailActivity.putExtra(MOVIE_DETAILS_KEY, movieModel);
         startActivity(intentToStartDetailActivity);
@@ -127,8 +139,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return null;
             }
 
-            String location = params[0];
-            URL moviesRequestUrl = NetworkUtils.buildUrl(location);
+            String criteria = params[0];
+            String page = params[1];
+            URL moviesRequestUrl = NetworkUtils.buildUrl(criteria, page);
 
             try {
                 String jsonMoviesResponse = NetworkUtils
@@ -148,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (movies != null) {
                 mMovies = movies;
                 mMoviesAdapter.addAll(mMovies);
+                mMoviesAdapter.notifyDataSetChanged();
                 mErrorMessageDisplay.setVisibility(View.INVISIBLE);
             } else {
                 mErrorMessageDisplay.setVisibility(View.VISIBLE);
