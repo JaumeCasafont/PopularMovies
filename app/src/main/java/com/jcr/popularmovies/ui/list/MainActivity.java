@@ -15,6 +15,8 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.jcr.popularmovies.AsyncTaskListener;
+import com.jcr.popularmovies.FetchMoviesTask;
 import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.data.MovieModel;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
 
             String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
-            new FetchMoviesTask().execute(sortCriteria, String.valueOf(currentPage));
+            new FetchMoviesTask(new FetchMoviesTaskListener()).execute(sortCriteria, String.valueOf(currentPage));
         }
     }
 
@@ -128,41 +130,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onOptionsItemSelected(item);
     }
 
-
-    public class FetchMoviesTask extends AsyncTask<String, Void, MovieModel[]> {
+    private class FetchMoviesTaskListener implements AsyncTaskListener<MovieModel[]> {
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        public void onTaskStarted() {
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected MovieModel[] doInBackground(String... params) {
-
-            /* If there's no zip code, there's nothing to look up. */
-            if (params.length == 0) {
-                return null;
-            }
-
-            String criteria = params[0];
-            String page = params[1];
-            URL moviesRequestUrl = NetworkUtils.buildUrl(criteria, page);
-
-            try {
-                String jsonMoviesResponse = NetworkUtils
-                        .getResponseFromHttpUrl(moviesRequestUrl);
-
-                return JsonParserUtils.parseJson(jsonMoviesResponse);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(MovieModel[] movies) {
+        public void onTaskComplete(MovieModel[] movies) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movies != null) {
                 mMovies = movies;
