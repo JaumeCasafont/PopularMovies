@@ -71,27 +71,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void loadData(int page) {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        String keyForSortCriteria = getString(R.string.pref_sort_criteria_key);
-        String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
+    private void loadData(int currentPage) {
+        if(NetworkUtils.isConnected(this)) {
+            SharedPreferences prefs = PreferenceManager
+                    .getDefaultSharedPreferences(this);
+            String keyForSortCriteria = getString(R.string.pref_sort_criteria_key);
+            String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
 
-        String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
-        new FetchMoviesTask().execute(sortCriteria, String.valueOf(page));
+            String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
+            new FetchMoviesTask().execute(sortCriteria, String.valueOf(currentPage));
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArray(MOVIES_KEY, mMovies);
+        if (mMovies != null) {
+            outState.putParcelableArray(MOVIES_KEY, mMovies);
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mMovies = (MovieModel[]) savedInstanceState.getParcelableArray(MOVIES_KEY);
-        mMoviesAdapter.addAll(mMovies);
+        if (savedInstanceState.containsKey(MOVIES_KEY)) {
+            mMovies = (MovieModel[]) savedInstanceState.getParcelableArray(MOVIES_KEY);
+            mMoviesAdapter.addAll(mMovies);
+        }
     }
 
     @Override
