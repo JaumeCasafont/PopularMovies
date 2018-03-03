@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jcr.popularmovies.R;
-import com.jcr.popularmovies.data.MovieModel;
+import com.jcr.popularmovies.data.network.MovieModel;
 import com.jcr.popularmovies.ui.list.MainActivity;
 import com.jcr.popularmovies.utilities.ImageUtils;
 import com.squareup.picasso.Picasso;

@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.jcr.popularmovies.R;
-import com.jcr.popularmovies.data.MovieModel;
+import com.jcr.popularmovies.data.network.MovieModel;
 import com.jcr.popularmovies.utilities.ImageUtils;
 import com.squareup.picasso.Picasso;
 

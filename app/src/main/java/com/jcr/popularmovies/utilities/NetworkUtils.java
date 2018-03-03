@@ -22,6 +22,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.jcr.popularmovies.BuildConfig;
+import com.jcr.popularmovies.data.network.ResponseModel;
+import com.jcr.popularmovies.data.network.TheMovieDBService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +31,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * These utilities will be used to communicate with the themoviedb servers.
@@ -39,44 +46,16 @@ public final class NetworkUtils {
 
     private static final String BASE_THEMOVIEDB_URL = "http://api.themoviedb.org/3/movie/";
 
-    private final static String API_KEY_PARAM = "api_key";
-    private final static String PAGE = "page";
-
-    public static URL buildUrl(String criteria, String page) {
-        Uri builtUri = Uri.parse(BASE_THEMOVIEDB_URL + criteria).buildUpon()
-                .appendQueryParameter(API_KEY_PARAM, BuildConfig.THEMOVIEDB_API_KEY)
-                .appendQueryParameter(PAGE, page)
+    public static void getMovies(Callback<ResponseModel> callback, String criteria, String page) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_THEMOVIEDB_URL)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        TheMovieDBService.MoviesService service = retrofit.create(TheMovieDBService.MoviesService.class);
 
-        Log.v(TAG, "Built URI " + url);
-
-        return url;
-    }
-
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
-
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
+        Call<ResponseModel> call = service.getMovies(criteria, BuildConfig.THEMOVIEDB_API_KEY, page);
+        call.enqueue(callback);
     }
 
     public static boolean isConnected(Context context) {

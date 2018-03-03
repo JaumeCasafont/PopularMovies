@@ -1,35 +1,104 @@
-package com.jcr.popularmovies.data;
+package com.jcr.popularmovies.data.network;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-public class MovieModel implements Parcelable {
+public class MovieModel implements Parcelable{
 
+	@SerializedName("overview")
 	private String overview;
+
+	@SerializedName("original_language")
 	private String originalLanguage;
+
+	@SerializedName("original_title")
 	private String originalTitle;
+
+	@SerializedName("video")
 	private boolean video;
+
+	@SerializedName("title")
 	private String title;
+
+	@SerializedName("genre_ids")
 	private List<Integer> genreIds;
+
+	@SerializedName("poster_path")
 	private String posterPath;
+
+	@SerializedName("backdrop_path")
 	private String backdropPath;
+
+	@SerializedName("release_date")
 	private String releaseDate;
+
+	@SerializedName("vote_average")
 	private double voteAverage;
+
+	@SerializedName("popularity")
 	private double popularity;
+
+	@SerializedName("id")
 	private int id;
+
+	@SerializedName("adult")
 	private boolean adult;
+
+	@SerializedName("vote_count")
 	private int voteCount;
 
-	public MovieModel(String title, String releaseDate, String poster, double voteAverage, String overview) {
-		this.overview = overview;
-		this.title = title;
-		this.posterPath = poster;
-		this.releaseDate = releaseDate;
-		this.voteAverage = voteAverage;
+	protected MovieModel(Parcel in) {
+		overview = in.readString();
+		originalLanguage = in.readString();
+		originalTitle = in.readString();
+		video = in.readByte() != 0;
+		title = in.readString();
+		posterPath = in.readString();
+		backdropPath = in.readString();
+		releaseDate = in.readString();
+		voteAverage = in.readDouble();
+		popularity = in.readDouble();
+		id = in.readInt();
+		adult = in.readByte() != 0;
+		voteCount = in.readInt();
 	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(overview);
+		dest.writeString(originalLanguage);
+		dest.writeString(originalTitle);
+		dest.writeByte((byte) (video ? 1 : 0));
+		dest.writeString(title);
+		dest.writeString(posterPath);
+		dest.writeString(backdropPath);
+		dest.writeString(releaseDate);
+		dest.writeDouble(voteAverage);
+		dest.writeDouble(popularity);
+		dest.writeInt(id);
+		dest.writeByte((byte) (adult ? 1 : 0));
+		dest.writeInt(voteCount);
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
+		@Override
+		public MovieModel createFromParcel(Parcel in) {
+			return new MovieModel(in);
+		}
+
+		@Override
+		public MovieModel[] newArray(int size) {
+			return new MovieModel[size];
+		}
+	};
 
 	public void setOverview(String overview){
 		this.overview = overview;
@@ -163,57 +232,4 @@ public class MovieModel implements Parcelable {
 			",vote_count = '" + voteCount + '\'' + 
 			"}";
 		}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(this.overview);
-		dest.writeString(this.originalLanguage);
-		dest.writeString(this.originalTitle);
-		dest.writeByte(this.video ? (byte) 1 : (byte) 0);
-		dest.writeString(this.title);
-		dest.writeList(this.genreIds);
-		dest.writeString(this.posterPath);
-		dest.writeString(this.backdropPath);
-		dest.writeString(this.releaseDate);
-		dest.writeDouble(this.voteAverage);
-		dest.writeDouble(this.popularity);
-		dest.writeInt(this.id);
-		dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
-		dest.writeInt(this.voteCount);
-	}
-
-	protected MovieModel(Parcel in) {
-		this.overview = in.readString();
-		this.originalLanguage = in.readString();
-		this.originalTitle = in.readString();
-		this.video = in.readByte() != 0;
-		this.title = in.readString();
-		this.genreIds = new ArrayList<>();
-		in.readList(this.genreIds, Integer.class.getClassLoader());
-		this.posterPath = in.readString();
-		this.backdropPath = in.readString();
-		this.releaseDate = in.readString();
-		this.voteAverage = in.readDouble();
-		this.popularity = in.readDouble();
-		this.id = in.readInt();
-		this.adult = in.readByte() != 0;
-		this.voteCount = in.readInt();
-	}
-
-	public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
-		@Override
-		public MovieModel createFromParcel(Parcel source) {
-			return new MovieModel(source);
-		}
-
-		@Override
-		public MovieModel[] newArray(int size) {
-			return new MovieModel[size];
-		}
-	};
 }

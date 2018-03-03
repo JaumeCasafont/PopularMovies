@@ -2,7 +2,6 @@ package com.jcr.popularmovies.ui.list;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
@@ -15,16 +14,16 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.jcr.popularmovies.AsyncTaskListener;
-import com.jcr.popularmovies.FetchMoviesTask;
+import com.jcr.popularmovies.data.network.MovieModel;
+import com.jcr.popularmovies.data.network.ResponseModel;
 import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.R;
-import com.jcr.popularmovies.data.MovieModel;
 import com.jcr.popularmovies.ui.settings.SettingsActivity;
-import com.jcr.popularmovies.utilities.JsonParserUtils;
 import com.jcr.popularmovies.utilities.NetworkUtils;
 
-import java.net.URL;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -75,13 +74,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void loadData(int currentPage) {
         if(NetworkUtils.isConnected(this)) {
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+
             SharedPreferences prefs = PreferenceManager
                     .getDefaultSharedPreferences(this);
             String keyForSortCriteria = getString(R.string.pref_sort_criteria_key);
             String defaultSortCriteria = getString(R.string.pref_sort_criteria_rated_value);
 
             String sortCriteria = prefs.getString(keyForSortCriteria, defaultSortCriteria);
-            new FetchMoviesTask(new FetchMoviesTaskListener()).execute(sortCriteria, String.valueOf(currentPage));
+            NetworkUtils.getMovies(new Callback<ResponseModel>() {
+                @Override
+                public void onResponse(Call<ResponseModel> call,
+                                       Response<ResponseModel> response) {
+                    mLoadingIndicator.setVisibility(View.INVISIBLE);
+                    if (response.body() != null) {
+                        mMovies = response.body().getResults();
+                        mMoviesAdapter.addAll(mMovies);
+                        mMoviesAdapter.notifyDataSetChanged();
+                        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+                    } else {
+                        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseModel> call,
+                                      Throwable t) {
+                    mErrorMessageDisplay.setVisibility(View.VISIBLE);
+                }
+            }, sortCriteria, String.valueOf(currentPage));
         }
     }
 
@@ -128,27 +149,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private class FetchMoviesTaskListener implements AsyncTaskListener<MovieModel[]> {
-
-        @Override
-        public void onTaskStarted() {
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onTaskComplete(MovieModel[] movies) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movies != null) {
-                mMovies = movies;
-                mMoviesAdapter.addAll(mMovies);
-                mMoviesAdapter.notifyDataSetChanged();
-                mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-            } else {
-                mErrorMessageDisplay.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     @Override
