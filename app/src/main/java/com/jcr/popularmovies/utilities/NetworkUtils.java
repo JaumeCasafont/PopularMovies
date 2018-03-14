@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.jcr.popularmovies.BuildConfig;
+import com.jcr.popularmovies.data.PopularMoviesPreferences;
 import com.jcr.popularmovies.data.network.ResponseModel;
 import com.jcr.popularmovies.data.network.TheMovieDBService;
 
@@ -46,7 +47,7 @@ public final class NetworkUtils {
 
     private static final String BASE_THEMOVIEDB_URL = "http://api.themoviedb.org/3/movie/";
 
-    public static void getMovies(Callback<ResponseModel> callback, String criteria, String page) {
+    public static void getMovies(Context context, Callback<ResponseModel> callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_THEMOVIEDB_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -54,6 +55,8 @@ public final class NetworkUtils {
 
         TheMovieDBService.MoviesService service = retrofit.create(TheMovieDBService.MoviesService.class);
 
+        String criteria = PopularMoviesPreferences.getSortCriteria(context);
+        String page = String.valueOf(PopularMoviesPreferences.getCurrentPage(context));
         Call<ResponseModel> call = service.getMovies(criteria, BuildConfig.THEMOVIEDB_API_KEY, page);
         call.enqueue(callback);
     }

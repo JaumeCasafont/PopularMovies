@@ -1,5 +1,6 @@
 package com.jcr.popularmovies.ui.settings;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;
@@ -9,6 +10,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 import com.jcr.popularmovies.R;
+import com.jcr.popularmovies.data.sync.MoviesSyncUtils;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
@@ -62,6 +64,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
     @Override
     public boolean onPreferenceChange(android.support.v7.preference.Preference preference, Object newValue) {
+        Context context = getContext();
+        if (context != null) MoviesSyncUtils.startImmediateSync(context);
         return true;
     }
 

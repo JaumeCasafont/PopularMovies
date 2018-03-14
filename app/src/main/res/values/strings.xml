@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">PopularMovies</string>
+    <string name="content_authority">com.jcr.popularmovies</string>
+
     <string name="error_message">
         An error has occurred. Please try again later
     </string>
@@ -18,4 +20,6 @@
 
     <string name="pref_sort_criteria_rated_value" translatable="false">top_rated</string>
     <string name="pref_sort_criteria_popular_value" translatable="false">popular</string>
+
+    <string name="pref_current_page_key" translatable="false">current_page</string>
 </resources>
