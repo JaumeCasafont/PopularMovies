@@ -12,13 +12,9 @@ import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.ui.OnLoaderFinishedCallback;
 
 import static com.jcr.popularmovies.ui.list.MainActivity.MOVIES_LIST_LOADER_ID;
+import static com.jcr.popularmovies.ui.list.MainActivity.MOVIES_LIST_PROJECTION;
 
 public class MoviesGridLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
-
-    public static final String[] MOVIES_LIST_PROJECTION = {
-            MoviesContract.MovieEntry.COLUMN_ID,
-            MoviesContract.MovieEntry.COLUMN_POSTER_PATH
-    };
 
     private Context mContext;
     private OnLoaderFinishedCallback mCallback;

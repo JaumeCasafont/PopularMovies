@@ -1,44 +1,46 @@
 package com.jcr.popularmovies.ui.list;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jcr.popularmovies.data.PopularMoviesPreferences;
+import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.data.network.MovieModel;
-import com.jcr.popularmovies.data.network.ResponseModel;
 import com.jcr.popularmovies.data.sync.MoviesSyncUtils;
 import com.jcr.popularmovies.ui.OnLoaderFinishedCallback;
 import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.ui.settings.SettingsActivity;
-import com.jcr.popularmovies.utilities.NetworkUtils;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterClickHandler,
         OnLoaderFinishedCallback{
+
+    public static final String[] MOVIES_LIST_PROJECTION = {
+            MoviesContract.MovieEntry.COLUMN_ID,
+            MoviesContract.MovieEntry.COLUMN_POSTER_PATH
+    };
+
+    public static final int INDEX_COLUMN_ID = 0;
+    public static final int INDEX_COLUMN_POSTER_PATH = 1;
 
     public static final int MOVIES_LIST_LOADER_ID = 127;
     public static final String MOVIE_DETAILS_KEY = "movie_key";
 
     private static final String MOVIES_KEY = "movies";
 
-    private GridView mGridView;
-    private MoviesGridAdapter mMoviesAdapter;
+    private RecyclerView mRecyclerGridView;
+    private MoviesAdapter mMoviesAdapter;
     private MovieModel[] mMovies;
 
     private TextView mErrorMessageDisplay;
@@ -50,20 +52,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGridView = findViewById(R.id.movies_grid);
+        mRecyclerGridView = findViewById(R.id.movies_grid);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
-        mMoviesAdapter = new MoviesGridAdapter(MainActivity.this);
-        mGridView.setAdapter(mMoviesAdapter);
-        mGridView.setOnItemClickListener(this);
-        mGridView.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                PopularMoviesPreferences.setCurrentPage(MainActivity.this, page);
-                return true;
-            }
-        });
+        mRecyclerGridView.setLayoutManager( new GridLayoutManager(this, 2));
+        mMoviesAdapter = new MoviesAdapter(this, this);
+        mRecyclerGridView.setAdapter(mMoviesAdapter);
 
         MoviesGridLoaderCallbacks loaderCallbacks = new MoviesGridLoaderCallbacks(this, this);
         getSupportLoaderManager().initLoader(MOVIES_LIST_LOADER_ID, null, loaderCallbacks);
@@ -84,15 +79,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.containsKey(MOVIES_KEY)) {
             mMovies = (MovieModel[]) savedInstanceState.getParcelableArray(MOVIES_KEY);
-            mMoviesAdapter.addAll(mMovies);
+            //mMoviesAdapter.addAll(mMovies);
         }
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        MovieModel movieModel = mMoviesAdapter.getItem(position);
+    public void onClick(int movieId) {
         Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
-        intentToStartDetailActivity.putExtra(MOVIE_DETAILS_KEY, movieModel);
+        intentToStartDetailActivity.putExtra(MOVIE_DETAILS_KEY, movieId);
         startActivity(intentToStartDetailActivity);
     }
 
@@ -118,6 +112,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onLoaderFinished(Cursor data) {
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mMoviesAdapter.swapCursor(data);
     }
 }
