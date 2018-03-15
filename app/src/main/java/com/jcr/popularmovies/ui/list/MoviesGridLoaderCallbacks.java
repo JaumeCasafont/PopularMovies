@@ -30,7 +30,7 @@ public class MoviesGridLoaderCallbacks implements LoaderManager.LoaderCallbacks<
 
             case MOVIES_LIST_LOADER_ID:
                 Uri moviesQueryUri = MoviesContract.MovieEntry.CONTENT_URI;
-                String sortOrder = MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE + " ASC";
+                String sortOrder = MoviesContract.getProjectionForSortCriteria(mContext);
 
                 return new CursorLoader(mContext,
                         moviesQueryUri,

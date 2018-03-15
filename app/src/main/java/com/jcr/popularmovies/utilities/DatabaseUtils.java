@@ -19,6 +19,7 @@ public final class DatabaseUtils {
             movieValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH, movieModels[i].getPosterPath());
             movieValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, movieModels[i].getReleaseDate());
             movieValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE, movieModels[i].getVoteAverage());
+            movieValues.put(MoviesContract.MovieEntry.COLUMN_POPULARITY, movieModels[i].getPopularity());
             movieValues.put(MoviesContract.MovieEntry.COLUMN_FAVORITE, false);
 
             movieContentValues[i] = movieValues;

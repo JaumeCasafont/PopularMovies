@@ -15,8 +15,12 @@
  */
 package com.jcr.popularmovies.data.database;
 
+import android.content.Context;
 import android.net.Uri;
 import android.provider.BaseColumns;
+
+import com.jcr.popularmovies.R;
+import com.jcr.popularmovies.data.PopularMoviesPreferences;
 
 public class MoviesContract {
 
@@ -48,10 +52,20 @@ public class MoviesContract {
         /* Stored as a double */
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
 
+        /* Stored as a double */
+        public static final String COLUMN_POPULARITY = "popularity";
+
         /* Stored as an int */
         public static final String COLUMN_ID = "id";
 
         /* Stored as a boolean */
         public static final String COLUMN_FAVORITE = "favorite";
+    }
+
+    public static String getProjectionForSortCriteria(Context context) {
+        String sortCriteria = PopularMoviesPreferences.getSortCriteria(context);
+        String column = sortCriteria.equals(context.getResources().getString(R.string.pref_sort_criteria_popular_value)) ? MovieEntry.COLUMN_POPULARITY :
+            MovieEntry.COLUMN_VOTE_AVERAGE;
+        return column + " DESC";
     }
 }

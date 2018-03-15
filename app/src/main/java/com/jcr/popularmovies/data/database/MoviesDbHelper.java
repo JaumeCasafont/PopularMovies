@@ -26,7 +26,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "movies.db";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public MoviesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,9 +53,11 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
                         MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
 
+                        MoviesContract.MovieEntry.COLUMN_POPULARITY + " REAL NOT NULL, " +
+
                         MoviesContract.MovieEntry.COLUMN_FAVORITE + " INTEGER DEFAULT 0, " +
 
-                " UNIQUE (" + MoviesContract.MovieEntry.COLUMN_ID + ") ON CONFLICT IGNORE);";
+                " UNIQUE (" + MoviesContract.MovieEntry.COLUMN_ID + ") ON CONFLICT REPLACE);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_WEATHER_TABLE);
     }

@@ -1,5 +1,6 @@
 package com.jcr.popularmovies.ui.settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.data.sync.MoviesSyncUtils;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
-        SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -35,17 +36,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        android.support.v7.preference.Preference preference = findPreference(key);
-        if (null != preference) {
-            if (!(preference instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(preference.getKey(), "");
-                setPreferenceSummary(preference, value);
-            }
-        }
-    }
-
     /**
      * Updates the summary for the preference
      *
@@ -63,23 +53,32 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     }
 
     @Override
-    public boolean onPreferenceChange(android.support.v7.preference.Preference preference, Object newValue) {
-        Context context = getContext();
-        if (context != null) MoviesSyncUtils.startImmediateSync(context);
-        return true;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
+        // register the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
+        // unregister the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Activity activity = getActivity();
+        if (key.equals(getString(R.string.pref_sort_criteria_key))) {
+            MoviesSyncUtils.startImmediateSync(activity);
+        }
+        Preference preference = findPreference(key);
+        if (null != preference) {
+            if (!(preference instanceof CheckBoxPreference)) {
+                setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
+            }
+        }
     }
 }
