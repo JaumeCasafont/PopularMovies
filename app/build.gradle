@@ -20,6 +20,7 @@ android {
             buildConfigField 'String', 'THEMOVIEDB_API_KEY', '\"' + "${API_KEY}" + '\"'
         }
     }
+    dataBinding.enabled = true
 }
 
 dependencies {
