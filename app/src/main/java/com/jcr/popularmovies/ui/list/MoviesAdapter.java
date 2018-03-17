@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jcr.popularmovies.R;
+import com.jcr.popularmovies.data.network.MovieModel;
 import com.jcr.popularmovies.utilities.ImageUtils;
 import com.squareup.picasso.Picasso;
 
@@ -18,7 +19,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     private final Context mContext;
     private final MoviesAdapterClickHandler mClickHandler;
 
-    private Cursor mCursor;
+    private MovieModel[] mMovies;
 
     public MoviesAdapter(@NonNull Context context, MoviesAdapterClickHandler clickHandler) {
         mContext = context;
@@ -35,25 +36,24 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     @Override
     public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
-
-        String posterPath = mCursor.getString(MainActivity.INDEX_COLUMN_POSTER_PATH);
-        Picasso.with(mContext).load(ImageUtils.generatePosterUrl(posterPath)).into(holder.posterImage);
+        Picasso.with(mContext).load(
+                ImageUtils.generatePosterUrl(mMovies[position].getPosterPath()))
+                .into(holder.posterImage);
     }
 
     @Override
     public int getItemCount() {
-        if (null == mCursor) return 0;
-        return mCursor.getCount();
+        if (null == mMovies) return 0;
+        return mMovies.length;
     }
 
-    public void swapCursor(Cursor cursor) {
-        mCursor = cursor;
+    public void addMovies(MovieModel[] movies) {
+        mMovies = movies;
         notifyDataSetChanged();
     }
 
     public interface MoviesAdapterClickHandler {
-        void onClick(int movieId);
+        void onClick(MovieModel movie);
     }
 
     class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -70,9 +70,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            mCursor.moveToPosition(adapterPosition);
-            int movieId = mCursor.getInt(MainActivity.INDEX_COLUMN_ID);
-            mClickHandler.onClick(movieId);
+            mClickHandler.onClick(mMovies[adapterPosition]);
         }
     }
 }

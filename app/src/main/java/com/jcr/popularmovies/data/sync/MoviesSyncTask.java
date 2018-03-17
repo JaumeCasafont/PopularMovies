@@ -22,7 +22,7 @@ import android.content.Context;
 import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.data.network.MovieModel;
 import com.jcr.popularmovies.data.network.ResponseModel;
-import com.jcr.popularmovies.utilities.DatabaseUtils;
+import com.jcr.popularmovies.utilities.MoviesDatabaseUtils;
 import com.jcr.popularmovies.utilities.NetworkUtils;
 
 import retrofit2.Call;
@@ -37,29 +37,29 @@ public class MoviesSyncTask {
      * @param context Used to access utility methods and the ContentResolver
      */
     synchronized public static void syncMovies(final Context context) {
-        if (NetworkUtils.isConnected(context)) {
-            NetworkUtils.getMovies(context, new Callback<ResponseModel>() {
-                @Override
-                public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                    MovieModel[] movies = response.body().getResults();
-                    ContentValues[] movieValues = DatabaseUtils.getMoviesContentValues(context, movies);
-
-                    if (movieValues != null && movieValues.length != 0) {
-                        ContentResolver popularMoviesContentResolver = context.getContentResolver();
-
-                        popularMoviesContentResolver.bulkInsert(
-                                MoviesContract.MovieEntry.CONTENT_URI,
-                                movieValues
-                        );
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseModel> call, Throwable t) {
-
-                }
-            });
-
-        }
+//        if (NetworkUtils.isConnected(context)) {
+//            NetworkUtils.getMovies(context, new Callback<ResponseModel>() {
+//                @Override
+//                public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+//                    MovieModel[] movies = response.body().getResults();
+//                    ContentValues[] movieValues = MoviesDatabaseUtils.getMoviesContentValues(context, movies);
+//
+//                    if (movieValues != null && movieValues.length != 0) {
+//                        ContentResolver popularMoviesContentResolver = context.getContentResolver();
+//
+//                        popularMoviesContentResolver.bulkInsert(
+//                                MoviesContract.MovieEntry.CONTENT_URI,
+//                                movieValues
+//                        );
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<ResponseModel> call, Throwable t) {
+//
+//                }
+//            });
+//
+//        }
     }
 }

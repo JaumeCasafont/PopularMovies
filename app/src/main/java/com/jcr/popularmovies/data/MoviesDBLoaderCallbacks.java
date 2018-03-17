@@ -1,4 +1,4 @@
-package com.jcr.popularmovies.ui.list;
+package com.jcr.popularmovies.data;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,16 +10,17 @@ import android.support.v4.content.Loader;
 
 import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.ui.OnLoaderFinishedCallback;
+import com.jcr.popularmovies.utilities.MoviesDatabaseUtils;
 
-import static com.jcr.popularmovies.ui.list.MainActivity.MOVIES_LIST_LOADER_ID;
-import static com.jcr.popularmovies.ui.list.MainActivity.MOVIES_LIST_PROJECTION;
+import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_LIST_LOADER_ID;
+import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_LIST_PROJECTION;
 
-public class MoviesGridLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MoviesDBLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private Context mContext;
     private OnLoaderFinishedCallback mCallback;
 
-    public MoviesGridLoaderCallbacks(Context context, OnLoaderFinishedCallback callback) {
+    public MoviesDBLoaderCallbacks(Context context, OnLoaderFinishedCallback callback) {
         mContext = context;
         mCallback = callback;
     }
@@ -46,7 +47,7 @@ public class MoviesGridLoaderCallbacks implements LoaderManager.LoaderCallbacks<
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCallback.onLoaderFinished(data);
+        mCallback.onLoaderFinished(MoviesDatabaseUtils.getMoviesFromCursor(data));
     }
 
     @Override

@@ -50,6 +50,16 @@ public class MovieModel implements Parcelable{
 	@SerializedName("vote_count")
 	private int voteCount;
 
+	public MovieModel(String overview, String title, String posterPath, String releaseDate, double voteAverage, double popularity, int id) {
+		this.overview = overview;
+		this.title = title;
+		this.posterPath = posterPath;
+		this.releaseDate = releaseDate;
+		this.voteAverage = voteAverage;
+		this.popularity = popularity;
+		this.id = id;
+	}
+
 	protected MovieModel(Parcel in) {
 		overview = in.readString();
 		originalLanguage = in.readString();

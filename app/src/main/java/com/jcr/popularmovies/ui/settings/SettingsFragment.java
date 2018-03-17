@@ -24,11 +24,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         PreferenceScreen prefScreen = getPreferenceScreen();
         int count = prefScreen.getPreferenceCount();
 
-        // Go through all of the preferences, and set up their preference summary.
         for (int i = 0; i < count; i++) {
             Preference p = prefScreen.getPreference(i);
-            // You don't need to set up preference summaries for checkbox preferences because
-            // they are already set up in xml using summaryOff and summary On
             if (!(p instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(p.getKey(), "");
                 setPreferenceSummary(p, value);
@@ -55,7 +52,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onStart() {
         super.onStart();
-        // register the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
@@ -63,7 +59,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onStop() {
         super.onStop();
-        // unregister the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
@@ -72,7 +67,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Activity activity = getActivity();
         if (key.equals(getString(R.string.pref_sort_criteria_key))) {
-            MoviesSyncUtils.startImmediateSync(activity);
+            //MoviesSyncUtils.startImmediateSync(activity);
         }
         Preference preference = findPreference(key);
         if (null != preference) {

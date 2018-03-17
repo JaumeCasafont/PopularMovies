@@ -10,11 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.jcr.popularmovies.data.PopularMoviesPreferences;
+import com.jcr.popularmovies.data.MoviesDBLoaderCallbacks;
+import com.jcr.popularmovies.data.MoviesRepository;
 import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.data.network.MovieModel;
 import com.jcr.popularmovies.data.sync.MoviesSyncUtils;
@@ -26,17 +26,7 @@ import com.jcr.popularmovies.ui.settings.SettingsActivity;
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterClickHandler,
         OnLoaderFinishedCallback{
 
-    public static final String[] MOVIES_LIST_PROJECTION = {
-            MoviesContract.MovieEntry.COLUMN_ID,
-            MoviesContract.MovieEntry.COLUMN_POSTER_PATH
-    };
-
-    public static final int INDEX_COLUMN_ID = 0;
-    public static final int INDEX_COLUMN_POSTER_PATH = 1;
-
-    public static final int MOVIES_LIST_LOADER_ID = 127;
     public static final String MOVIE_DETAILS_KEY = "movie_key";
-
     private static final String MOVIES_KEY = "movies";
 
     private RecyclerView mRecyclerGridView;
@@ -60,10 +50,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mMoviesAdapter = new MoviesAdapter(this, this);
         mRecyclerGridView.setAdapter(mMoviesAdapter);
 
-        MoviesGridLoaderCallbacks loaderCallbacks = new MoviesGridLoaderCallbacks(this, this);
-        getSupportLoaderManager().initLoader(MOVIES_LIST_LOADER_ID, null, loaderCallbacks);
+        //MoviesSyncUtils.initialize(this);
+    }
 
-        MoviesSyncUtils.initialize(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mMovies == null) {
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+            MoviesRepository.getMovies(this, this);
+        }
     }
 
     @Override
@@ -79,26 +75,24 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.containsKey(MOVIES_KEY)) {
             mMovies = (MovieModel[]) savedInstanceState.getParcelableArray(MOVIES_KEY);
-            //mMoviesAdapter.addAll(mMovies);
+            mMoviesAdapter.addMovies(mMovies);
         }
     }
 
     @Override
-    public void onClick(int movieId) {
+    public void onClick(MovieModel movie) {
         Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
-        intentToStartDetailActivity.putExtra(MOVIE_DETAILS_KEY, movieId);
+        intentToStartDetailActivity.putExtra(MOVIE_DETAILS_KEY, movie);
         startActivity(intentToStartDetailActivity);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
         MenuInflater inflater = getMenuInflater();
-        /* Use the inflater's inflate method to inflate our visualizer_menu layout to this menu */
         inflater.inflate(R.menu.sort_criteria_menu, menu);
-        /* Return true so that the visualizer_menu is displayed in the Toolbar */
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -111,7 +105,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     @Override
-    public void onLoaderFinished(Cursor data) {
-        mMoviesAdapter.swapCursor(data);
+    public void onLoaderFinished(MovieModel[] movies) {
+        mLoadingIndicator.setVisibility(View.GONE);
+        mMovies = movies;
+        mMoviesAdapter.addMovies(mMovies);
+    }
+
+    @Override
+    public void onLoaderError(Throwable t) {
+        mLoadingIndicator.setVisibility(View.GONE);
+        mErrorMessageDisplay.setText(R.string.error_message);
     }
 }
