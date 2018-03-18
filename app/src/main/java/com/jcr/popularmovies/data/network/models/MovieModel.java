@@ -1,4 +1,4 @@
-package com.jcr.popularmovies.data.network;
+package com.jcr.popularmovies.data.network.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

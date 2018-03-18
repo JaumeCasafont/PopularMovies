@@ -1,6 +1,7 @@
-package com.jcr.popularmovies.data.network;
+package com.jcr.popularmovies.data.network.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.jcr.popularmovies.data.network.models.MovieModel;
 
 public class ResponseModel{
 

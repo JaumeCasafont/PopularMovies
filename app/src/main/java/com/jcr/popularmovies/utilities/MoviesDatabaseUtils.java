@@ -6,8 +6,7 @@ import android.database.Cursor;
 
 import com.jcr.popularmovies.data.MoviesRepository;
 import com.jcr.popularmovies.data.database.MoviesContract;
-import com.jcr.popularmovies.data.database.MoviesProvider;
-import com.jcr.popularmovies.data.network.MovieModel;
+import com.jcr.popularmovies.data.network.models.MovieModel;
 
 public final class MoviesDatabaseUtils {
 

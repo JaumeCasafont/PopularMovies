@@ -5,9 +5,13 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 
 import com.jcr.popularmovies.data.database.MoviesContract;
-import com.jcr.popularmovies.data.network.MovieModel;
-import com.jcr.popularmovies.data.network.ResponseModel;
-import com.jcr.popularmovies.ui.OnLoaderFinishedCallback;
+import com.jcr.popularmovies.data.network.TheMovieDBService;
+import com.jcr.popularmovies.data.network.models.MovieModel;
+import com.jcr.popularmovies.data.network.models.ResponseModel;
+import com.jcr.popularmovies.data.network.models.ResponseVideos;
+import com.jcr.popularmovies.data.network.models.VideoModel;
+import com.jcr.popularmovies.ui.OnLoadMoviesFinishedCallback;
+import com.jcr.popularmovies.ui.OnLoadVideosFinishedCallback;
 import com.jcr.popularmovies.utilities.NetworkUtils;
 
 import retrofit2.Call;
@@ -36,7 +40,21 @@ public final class MoviesRepository {
 
     public static final int MOVIES_LIST_LOADER_ID = 127;
 
-    public static void getMovies(FragmentActivity activity, final OnLoaderFinishedCallback onLoadFinished) {
+    private static MoviesRepository sInstance;
+
+    private static boolean sInitialized;
+
+    private static TheMovieDBService.MoviesService moviesService;
+
+    public MoviesRepository() {
+        if (sInitialized) return;
+        sInitialized = true;
+        sInstance = this;
+
+        moviesService = NetworkUtils.createMoviesService();
+    }
+
+    public void getMovies(FragmentActivity activity, final OnLoadMoviesFinishedCallback onLoadFinished) {
         if (NetworkUtils.isConnected(activity)) {
             getMoviesFromNetwork(activity, onLoadFinished);
         } else {
@@ -44,8 +62,8 @@ public final class MoviesRepository {
         }
     }
 
-    private static void getMoviesFromNetwork(FragmentActivity activity, final OnLoaderFinishedCallback onLoadFinished){
-        NetworkUtils.getMovies(activity, new Callback<ResponseModel>() {
+    private void getMoviesFromNetwork(FragmentActivity activity, final OnLoadMoviesFinishedCallback onLoadFinished){
+        NetworkUtils.getMovies(moviesService, activity, new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 MovieModel[] movies = response.body().getResults();
@@ -59,8 +77,25 @@ public final class MoviesRepository {
         });
     }
 
-    private static void getFavoriteMoviesFromDB(FragmentActivity activity, final OnLoaderFinishedCallback onLoadFinished) {
+    private void getFavoriteMoviesFromDB(FragmentActivity activity, final OnLoadMoviesFinishedCallback onLoadFinished) {
         MoviesDBLoaderCallbacks loaderCallbacks = new MoviesDBLoaderCallbacks(activity, onLoadFinished);
         activity.getSupportLoaderManager().initLoader(MOVIES_LIST_LOADER_ID, null, loaderCallbacks);
+    }
+
+    public void getVideos(Context context, int id, final OnLoadVideosFinishedCallback onLoadFinished) {
+        if (NetworkUtils.isConnected(context)) {
+            NetworkUtils.getVideos(moviesService, id, new Callback<ResponseVideos>() {
+                @Override
+                public void onResponse(Call<ResponseVideos> call, Response<ResponseVideos> response) {
+                    VideoModel[] videos = response.body().getResults();
+                    onLoadFinished.onLoaderFinished(videos);
+                }
+
+                @Override
+                public void onFailure(Call<ResponseVideos> call, Throwable t) {
+                    onLoadFinished.onLoaderError();
+                }
+            });
+        } else onLoadFinished.onLoaderError();
     }
 }

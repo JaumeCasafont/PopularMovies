@@ -1,7 +1,6 @@
 package com.jcr.popularmovies.ui.list;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jcr.popularmovies.R;
-import com.jcr.popularmovies.data.network.MovieModel;
+import com.jcr.popularmovies.data.network.models.MovieModel;
 import com.jcr.popularmovies.utilities.ImageUtils;
 import com.squareup.picasso.Picasso;
 
@@ -29,7 +28,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     @Override
     public MoviesAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.movie_item, parent, false);
-        view.setFocusable(true);
 
         return new MoviesAdapterViewHolder(view);
     }

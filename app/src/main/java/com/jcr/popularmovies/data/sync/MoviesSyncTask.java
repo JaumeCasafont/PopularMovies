@@ -15,19 +15,7 @@
  */
 package com.jcr.popularmovies.data.sync;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-
-import com.jcr.popularmovies.data.database.MoviesContract;
-import com.jcr.popularmovies.data.network.MovieModel;
-import com.jcr.popularmovies.data.network.ResponseModel;
-import com.jcr.popularmovies.utilities.MoviesDatabaseUtils;
-import com.jcr.popularmovies.utilities.NetworkUtils;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MoviesSyncTask {
 

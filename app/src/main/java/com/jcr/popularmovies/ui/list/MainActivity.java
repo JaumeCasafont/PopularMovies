@@ -1,7 +1,6 @@
 package com.jcr.popularmovies.ui.list;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,18 +12,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.jcr.popularmovies.data.MoviesDBLoaderCallbacks;
-import com.jcr.popularmovies.data.MoviesRepository;
-import com.jcr.popularmovies.data.database.MoviesContract;
-import com.jcr.popularmovies.data.network.MovieModel;
-import com.jcr.popularmovies.data.sync.MoviesSyncUtils;
-import com.jcr.popularmovies.ui.OnLoaderFinishedCallback;
+import com.jcr.popularmovies.AppPopularMovies;
+import com.jcr.popularmovies.data.network.models.MovieModel;
+import com.jcr.popularmovies.ui.OnLoadMoviesFinishedCallback;
 import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterClickHandler,
-        OnLoaderFinishedCallback{
+        OnLoadMoviesFinishedCallback {
 
     public static final String MOVIE_DETAILS_KEY = "movie_key";
     private static final String MOVIES_KEY = "movies";
@@ -58,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         super.onResume();
         if (mMovies == null) {
             mLoadingIndicator.setVisibility(View.VISIBLE);
-            MoviesRepository.getMovies(this, this);
+            AppPopularMovies.getRepository().getMovies(this, this);
         }
     }
 

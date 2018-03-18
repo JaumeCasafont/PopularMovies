@@ -9,7 +9,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import com.jcr.popularmovies.data.database.MoviesContract;
-import com.jcr.popularmovies.ui.OnLoaderFinishedCallback;
+import com.jcr.popularmovies.ui.OnLoadMoviesFinishedCallback;
 import com.jcr.popularmovies.utilities.MoviesDatabaseUtils;
 
 import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_LIST_LOADER_ID;
@@ -18,9 +18,9 @@ import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_LIST_PROJECTION
 public class MoviesDBLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private Context mContext;
-    private OnLoaderFinishedCallback mCallback;
+    private OnLoadMoviesFinishedCallback mCallback;
 
-    public MoviesDBLoaderCallbacks(Context context, OnLoaderFinishedCallback callback) {
+    public MoviesDBLoaderCallbacks(Context context, OnLoadMoviesFinishedCallback callback) {
         mContext = context;
         mCallback = callback;
     }
