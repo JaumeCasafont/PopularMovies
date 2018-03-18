@@ -8,4 +8,8 @@
 
     <dimen name="activity_margin_vertical_small">8dp</dimen>
     <dimen name="activity_margin_vertical_medium">16dp</dimen>
+
+    <dimen name="medium_title_text_size">20sp</dimen>
+
+    <dimen name="loading_size">42dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package com.jcr.popularmovies.data.network;
 
 import com.jcr.popularmovies.data.network.models.ResponseModel;
+import com.jcr.popularmovies.data.network.models.ResponseReviews;
 import com.jcr.popularmovies.data.network.models.ResponseVideos;
 
 import retrofit2.Call;
@@ -22,6 +23,11 @@ public class TheMovieDBService {
 
         @GET("{id}/videos")
         Call<ResponseVideos> getVideos(
+                @Path("id") String id,
+                @Query(API_KEY_PARAM) String apiKey);
+
+        @GET("{id}/reviews")
+        Call<ResponseReviews> getReviews(
                 @Path("id") String id,
                 @Query(API_KEY_PARAM) String apiKey);
     }

@@ -101,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     @Override
-    public void onLoaderFinished(MovieModel[] movies) {
+    public void onMoviesLoaded(MovieModel[] movies) {
         mLoadingIndicator.setVisibility(View.GONE);
         mMovies = movies;
         mMoviesAdapter.addMovies(mMovies);
     }
 
     @Override
-    public void onLoaderError(Throwable t) {
+    public void onMoviesLoadedError(Throwable t) {
         mLoadingIndicator.setVisibility(View.GONE);
         mErrorMessageDisplay.setText(R.string.error_message);
     }

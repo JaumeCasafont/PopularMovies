@@ -34,6 +34,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
     @Override
     public void onBindViewHolder(VideosAdapterViewHolder holder, int position) {
         holder.videoName.setText(mVideos[position].getName());
+        holder.separatorView.setVisibility(position == mVideos.length-1? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -54,11 +55,13 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
     class VideosAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final TextView videoName;
+        final View separatorView;
 
         public VideosAdapterViewHolder(View itemView) {
             super(itemView);
 
             videoName = itemView.findViewById(R.id.video_name_tv);
+            separatorView = itemView.findViewById(R.id.video_item_separator);
             itemView.setOnClickListener(this);
         }
 

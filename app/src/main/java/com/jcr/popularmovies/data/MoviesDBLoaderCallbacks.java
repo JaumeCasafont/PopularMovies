@@ -47,7 +47,7 @@ public class MoviesDBLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cu
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCallback.onLoaderFinished(MoviesDatabaseUtils.getMoviesFromCursor(data));
+        mCallback.onMoviesLoaded(MoviesDatabaseUtils.getMoviesFromCursor(data));
     }
 
     @Override

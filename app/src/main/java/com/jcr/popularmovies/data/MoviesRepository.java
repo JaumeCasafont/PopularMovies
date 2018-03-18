@@ -8,9 +8,12 @@ import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.data.network.TheMovieDBService;
 import com.jcr.popularmovies.data.network.models.MovieModel;
 import com.jcr.popularmovies.data.network.models.ResponseModel;
+import com.jcr.popularmovies.data.network.models.ResponseReviews;
 import com.jcr.popularmovies.data.network.models.ResponseVideos;
+import com.jcr.popularmovies.data.network.models.ReviewModel;
 import com.jcr.popularmovies.data.network.models.VideoModel;
 import com.jcr.popularmovies.ui.OnLoadMoviesFinishedCallback;
+import com.jcr.popularmovies.ui.OnLoadReviewsFinishedCallback;
 import com.jcr.popularmovies.ui.OnLoadVideosFinishedCallback;
 import com.jcr.popularmovies.utilities.NetworkUtils;
 
@@ -67,12 +70,12 @@ public final class MoviesRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 MovieModel[] movies = response.body().getResults();
-                onLoadFinished.onLoaderFinished(movies);
+                onLoadFinished.onMoviesLoaded(movies);
             }
 
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
-                onLoadFinished.onLoaderError(t);
+                onLoadFinished.onMoviesLoadedError(t);
             }
         });
     }
@@ -88,14 +91,31 @@ public final class MoviesRepository {
                 @Override
                 public void onResponse(Call<ResponseVideos> call, Response<ResponseVideos> response) {
                     VideoModel[] videos = response.body().getResults();
-                    onLoadFinished.onLoaderFinished(videos);
+                    onLoadFinished.onVideosLoaded(videos);
                 }
 
                 @Override
                 public void onFailure(Call<ResponseVideos> call, Throwable t) {
-                    onLoadFinished.onLoaderError();
+                    onLoadFinished.onVideosLoadedError();
                 }
             });
-        } else onLoadFinished.onLoaderError();
+        } else onLoadFinished.onVideosLoadedError();
+    }
+
+    public void getReviews(Context context, int id, final OnLoadReviewsFinishedCallback onLoadFinished) {
+        if (NetworkUtils.isConnected(context)) {
+            NetworkUtils.getReviews(moviesService, id, new Callback<ResponseReviews>() {
+                @Override
+                public void onResponse(Call<ResponseReviews> call, Response<ResponseReviews> response) {
+                    ReviewModel[] reviews = response.body().getResults();
+                    onLoadFinished.onReviewsLoaded(reviews);
+                }
+
+                @Override
+                public void onFailure(Call<ResponseReviews> call, Throwable t) {
+                    onLoadFinished.onReviewsLoadedError();
+                }
+            });
+        } else onLoadFinished.onReviewsLoadedError();
     }
 }

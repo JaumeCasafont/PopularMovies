@@ -1,8 +1,11 @@
 package com.jcr.popularmovies.data.network.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class VideoModel {
+public class VideoModel implements Parcelable {
 
 	@SerializedName("site")
 	private String site;
@@ -27,6 +30,46 @@ public class VideoModel {
 
 	@SerializedName("key")
 	private String key;
+
+	protected VideoModel(Parcel in) {
+		site = in.readString();
+		size = in.readInt();
+		iso31661 = in.readString();
+		name = in.readString();
+		id = in.readString();
+		type = in.readString();
+		iso6391 = in.readString();
+		key = in.readString();
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(site);
+		dest.writeInt(size);
+		dest.writeString(iso31661);
+		dest.writeString(name);
+		dest.writeString(id);
+		dest.writeString(type);
+		dest.writeString(iso6391);
+		dest.writeString(key);
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	public static final Creator<VideoModel> CREATOR = new Creator<VideoModel>() {
+		@Override
+		public VideoModel createFromParcel(Parcel in) {
+			return new VideoModel(in);
+		}
+
+		@Override
+		public VideoModel[] newArray(int size) {
+			return new VideoModel[size];
+		}
+	};
 
 	public void setSite(String site){
 		this.site = site;

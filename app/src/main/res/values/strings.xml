@@ -9,6 +9,9 @@
     <string name="action_settings">Settings</string>
     <string name="vote_average">%s/10</string>
 
+    <string name="videos_list_title">Related videos:</string>
+    <string name="reviews_list_title">Reviews:</string>
+
     <!-- - - - - - - - - - - - - - - -
           - Used by Preferences  -
           - - - - - - - - - - - - - - - -->

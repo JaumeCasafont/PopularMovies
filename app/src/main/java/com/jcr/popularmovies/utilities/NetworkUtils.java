@@ -23,6 +23,7 @@ import com.jcr.popularmovies.BuildConfig;
 import com.jcr.popularmovies.data.PopularMoviesPreferences;
 import com.jcr.popularmovies.data.network.models.ResponseModel;
 import com.jcr.popularmovies.data.network.TheMovieDBService;
+import com.jcr.popularmovies.data.network.models.ResponseReviews;
 import com.jcr.popularmovies.data.network.models.ResponseVideos;
 
 import retrofit2.Call;
@@ -68,6 +69,12 @@ public final class NetworkUtils {
     public static void getVideos(TheMovieDBService.MoviesService service, int id,
                                  Callback<ResponseVideos> callback) {
         Call<ResponseVideos> call = service.getVideos(String.valueOf(id), BuildConfig.THEMOVIEDB_API_KEY);
+        call.enqueue(callback);
+    }
+
+    public static void getReviews(TheMovieDBService.MoviesService service, int id,
+                                 Callback<ResponseReviews> callback) {
+        Call<ResponseReviews> call = service.getReviews(String.valueOf(id), BuildConfig.THEMOVIEDB_API_KEY);
         call.enqueue(callback);
     }
 }
