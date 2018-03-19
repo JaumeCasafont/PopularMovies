@@ -17,6 +17,12 @@ package com.jcr.popularmovies.data.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Bundle;
+
+import com.jcr.popularmovies.data.network.models.MovieModel;
+
+import static com.jcr.popularmovies.data.MoviesRepository.MOVIE_DELETE_KEY;
+import static com.jcr.popularmovies.data.MoviesRepository.MOVIE_ADD_KEY;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -30,6 +36,14 @@ public class MoviesSyncIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        MoviesSyncTask.syncMovies(this);
+        Bundle extras = intent.getExtras();
+        if (extras != null && extras.containsKey(MOVIE_ADD_KEY)) {
+            MovieModel movie = intent.getParcelableExtra(MOVIE_ADD_KEY);
+            MoviesSyncTask.addMovie(this, movie);
+        }
+        if (extras != null && extras.containsKey(MOVIE_DELETE_KEY)) {
+            int movieId = intent.getIntExtra(MOVIE_DELETE_KEY, -1);
+            MoviesSyncTask.deleteMovie(this, movieId);
+        }
     }
 }

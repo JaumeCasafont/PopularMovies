@@ -1,4 +1,4 @@
-package com.jcr.popularmovies.data;
+package com.jcr.popularmovies.ui.detail;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,36 +9,36 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import com.jcr.popularmovies.data.database.MoviesContract;
-import com.jcr.popularmovies.ui.OnLoadMoviesFinishedCallback;
+import com.jcr.popularmovies.ui.OnLoadFromRepositoryCallback;
 import com.jcr.popularmovies.utilities.MoviesDatabaseUtils;
 
-import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_LIST_LOADER_ID;
+import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_DETAIL_LOADER_ID;
 import static com.jcr.popularmovies.data.MoviesRepository.MOVIES_LIST_PROJECTION;
 
-public class MoviesDBLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MoviesDetailsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private Context mContext;
-    private OnLoadMoviesFinishedCallback mCallback;
+    private OnLoadFromRepositoryCallback mCallback;
+    private int mMovieId;
 
-    public MoviesDBLoaderCallbacks(Context context, OnLoadMoviesFinishedCallback callback) {
+    public MoviesDetailsLoaderCallbacks(Context context, OnLoadFromRepositoryCallback callback, int movieId) {
         mContext = context;
         mCallback = callback;
+        mMovieId = movieId;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
 
-            case MOVIES_LIST_LOADER_ID:
-                Uri moviesQueryUri = MoviesContract.MovieEntry.CONTENT_URI;
-                String sortOrder = MoviesContract.getProjectionForSortCriteria(mContext);
-
+            case MOVIES_DETAIL_LOADER_ID:
+                Uri moviesDetailQueryUri = MoviesContract.buildMovieUriWithId(mMovieId);
                 return new CursorLoader(mContext,
-                        moviesQueryUri,
+                        moviesDetailQueryUri,
                         MOVIES_LIST_PROJECTION,
                         null,
                         null,
-                        sortOrder);
+                        null);
 
             default:
                 throw new RuntimeException("Loader Not Implemented: " + id);
@@ -47,7 +47,7 @@ public class MoviesDBLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cu
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCallback.onMoviesLoaded(MoviesDatabaseUtils.getMoviesFromCursor(data));
+        mCallback.onLoad(MoviesDatabaseUtils.isFavorite(data));
     }
 
     @Override

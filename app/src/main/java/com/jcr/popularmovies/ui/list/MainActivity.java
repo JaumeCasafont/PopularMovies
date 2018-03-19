@@ -13,14 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jcr.popularmovies.AppPopularMovies;
-import com.jcr.popularmovies.data.network.models.MovieModel;
-import com.jcr.popularmovies.ui.OnLoadMoviesFinishedCallback;
-import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.R;
+import com.jcr.popularmovies.data.network.models.MovieModel;
+import com.jcr.popularmovies.ui.OnLoadFromRepositoryCallback;
+import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterClickHandler,
-        OnLoadMoviesFinishedCallback {
+        OnLoadFromRepositoryCallback<MovieModel[]> {
 
     public static final String MOVIE_DETAILS_KEY = "movie_key";
     private static final String MOVIES_KEY = "movies";
@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mRecyclerGridView.setLayoutManager( new GridLayoutManager(this, 2));
         mMoviesAdapter = new MoviesAdapter(this, this);
         mRecyclerGridView.setAdapter(mMoviesAdapter);
-
-        //MoviesSyncUtils.initialize(this);
     }
 
     @Override
@@ -101,14 +99,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     @Override
-    public void onMoviesLoaded(MovieModel[] movies) {
+    public void onLoad(MovieModel[] movies) {
         mLoadingIndicator.setVisibility(View.GONE);
         mMovies = movies;
         mMoviesAdapter.addMovies(mMovies);
     }
 
     @Override
-    public void onMoviesLoadedError(Throwable t) {
+    public void onError() {
         mLoadingIndicator.setVisibility(View.GONE);
         mErrorMessageDisplay.setText(R.string.error_message);
     }

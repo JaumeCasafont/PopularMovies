@@ -22,6 +22,8 @@ import android.provider.BaseColumns;
 import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.data.PopularMoviesPreferences;
 
+import static com.jcr.popularmovies.data.database.MoviesContract.MovieEntry.CONTENT_URI;
+
 public class MoviesContract {
 
     public static final String CONTENT_AUTHORITY = "com.jcr.popularmovies";
@@ -67,5 +69,11 @@ public class MoviesContract {
         String column = sortCriteria.equals(context.getResources().getString(R.string.pref_sort_criteria_popular_value)) ? MovieEntry.COLUMN_POPULARITY :
             MovieEntry.COLUMN_VOTE_AVERAGE;
         return column + " DESC";
+    }
+
+    public static Uri buildMovieUriWithId(int id) {
+        return CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(id))
+                .build();
     }
 }

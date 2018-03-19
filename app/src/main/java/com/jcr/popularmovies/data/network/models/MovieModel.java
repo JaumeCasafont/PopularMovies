@@ -50,7 +50,9 @@ public class MovieModel implements Parcelable{
 	@SerializedName("vote_count")
 	private int voteCount;
 
-	public MovieModel(String overview, String title, String posterPath, String releaseDate, double voteAverage, double popularity, int id) {
+	private boolean favorite;
+
+	public MovieModel(String overview, String title, String posterPath, String releaseDate, double voteAverage, double popularity, int id, int favorite) {
 		this.overview = overview;
 		this.title = title;
 		this.posterPath = posterPath;
@@ -58,7 +60,9 @@ public class MovieModel implements Parcelable{
 		this.voteAverage = voteAverage;
 		this.popularity = popularity;
 		this.id = id;
+		this.favorite = favorite == 1;
 	}
+
 
 	protected MovieModel(Parcel in) {
 		overview = in.readString();
@@ -74,6 +78,7 @@ public class MovieModel implements Parcelable{
 		id = in.readInt();
 		adult = in.readByte() != 0;
 		voteCount = in.readInt();
+		favorite = in.readByte() != 0;
 	}
 
 	@Override
@@ -91,6 +96,7 @@ public class MovieModel implements Parcelable{
 		dest.writeInt(id);
 		dest.writeByte((byte) (adult ? 1 : 0));
 		dest.writeInt(voteCount);
+		dest.writeByte((byte) (favorite ? 1 : 0));
 	}
 
 	@Override
@@ -110,136 +116,144 @@ public class MovieModel implements Parcelable{
 		}
 	};
 
-	public void setOverview(String overview){
-		this.overview = overview;
-	}
-
-	public String getOverview(){
+	public String getOverview() {
 		return overview;
 	}
 
-	public void setOriginalLanguage(String originalLanguage){
-		this.originalLanguage = originalLanguage;
+	public void setOverview(String overview) {
+		this.overview = overview;
 	}
 
-	public String getOriginalLanguage(){
+	public String getOriginalLanguage() {
 		return originalLanguage;
 	}
 
-	public void setOriginalTitle(String originalTitle){
-		this.originalTitle = originalTitle;
+	public void setOriginalLanguage(String originalLanguage) {
+		this.originalLanguage = originalLanguage;
 	}
 
-	public String getOriginalTitle(){
+	public String getOriginalTitle() {
 		return originalTitle;
 	}
 
-	public void setVideo(boolean video){
-		this.video = video;
+	public void setOriginalTitle(String originalTitle) {
+		this.originalTitle = originalTitle;
 	}
 
-	public boolean isVideo(){
+	public boolean isVideo() {
 		return video;
 	}
 
-	public void setTitle(String title){
-		this.title = title;
+	public void setVideo(boolean video) {
+		this.video = video;
 	}
 
-	public String getTitle(){
+	public String getTitle() {
 		return title;
 	}
 
-	public void setGenreIds(List<Integer> genreIds){
-		this.genreIds = genreIds;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public List<Integer> getGenreIds(){
+	public List<Integer> getGenreIds() {
 		return genreIds;
 	}
 
-	public void setPosterPath(String posterPath){
-		this.posterPath = posterPath;
+	public void setGenreIds(List<Integer> genreIds) {
+		this.genreIds = genreIds;
 	}
 
-	public String getPosterPath(){
+	public String getPosterPath() {
 		return posterPath;
 	}
 
-	public void setBackdropPath(String backdropPath){
-		this.backdropPath = backdropPath;
+	public void setPosterPath(String posterPath) {
+		this.posterPath = posterPath;
 	}
 
-	public String getBackdropPath(){
+	public String getBackdropPath() {
 		return backdropPath;
 	}
 
-	public void setReleaseDate(String releaseDate){
-		this.releaseDate = releaseDate;
+	public void setBackdropPath(String backdropPath) {
+		this.backdropPath = backdropPath;
 	}
 
-	public String getReleaseDate(){
+	public String getReleaseDate() {
 		return releaseDate;
 	}
 
-	public void setVoteAverage(double voteAverage){
-		this.voteAverage = voteAverage;
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
 	}
 
-	public double getVoteAverage(){
+	public double getVoteAverage() {
 		return voteAverage;
 	}
 
-	public void setPopularity(double popularity){
-		this.popularity = popularity;
+	public void setVoteAverage(double voteAverage) {
+		this.voteAverage = voteAverage;
 	}
 
-	public double getPopularity(){
+	public double getPopularity() {
 		return popularity;
 	}
 
-	public void setId(int id){
-		this.id = id;
+	public void setPopularity(double popularity) {
+		this.popularity = popularity;
 	}
 
-	public int getId(){
+	public int getId() {
 		return id;
 	}
 
-	public void setAdult(boolean adult){
-		this.adult = adult;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public boolean isAdult(){
+	public boolean isAdult() {
 		return adult;
 	}
 
-	public void setVoteCount(int voteCount){
-		this.voteCount = voteCount;
+	public void setAdult(boolean adult) {
+		this.adult = adult;
 	}
 
-	public int getVoteCount(){
+	public int getVoteCount() {
 		return voteCount;
 	}
 
+	public void setVoteCount(int voteCount) {
+		this.voteCount = voteCount;
+	}
+
+	public boolean isFavorite() {
+		return favorite;
+	}
+
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
+	}
+
 	@Override
- 	public String toString(){
-		return 
-			"MovieModel{" +
-			"overview = '" + overview + '\'' + 
-			",original_language = '" + originalLanguage + '\'' + 
-			",original_title = '" + originalTitle + '\'' + 
-			",video = '" + video + '\'' + 
-			",title = '" + title + '\'' + 
-			",genre_ids = '" + genreIds + '\'' + 
-			",poster_path = '" + posterPath + '\'' + 
-			",backdrop_path = '" + backdropPath + '\'' + 
-			",release_date = '" + releaseDate + '\'' + 
-			",vote_average = '" + voteAverage + '\'' + 
-			",popularity = '" + popularity + '\'' + 
-			",id = '" + id + '\'' + 
-			",adult = '" + adult + '\'' + 
-			",vote_count = '" + voteCount + '\'' + 
-			"}";
-		}
+	public String toString() {
+		return "MovieModel{" +
+				"overview='" + overview + '\'' +
+				", originalLanguage='" + originalLanguage + '\'' +
+				", originalTitle='" + originalTitle + '\'' +
+				", video=" + video +
+				", title='" + title + '\'' +
+				", genreIds=" + genreIds +
+				", posterPath='" + posterPath + '\'' +
+				", backdropPath='" + backdropPath + '\'' +
+				", releaseDate='" + releaseDate + '\'' +
+				", voteAverage=" + voteAverage +
+				", popularity=" + popularity +
+				", id=" + id +
+				", adult=" + adult +
+				", voteCount=" + voteCount +
+				", favorite=" + favorite +
+				'}';
+	}
 }

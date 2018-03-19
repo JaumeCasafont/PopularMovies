@@ -15,39 +15,33 @@
  */
 package com.jcr.popularmovies.data.sync;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+
+import com.jcr.popularmovies.data.database.MoviesContract;
+import com.jcr.popularmovies.data.network.models.MovieModel;
+import com.jcr.popularmovies.utilities.MoviesDatabaseUtils;
 
 public class MoviesSyncTask {
 
-    /**
-     * Performs the network request to get movies and inserts the new weather information into our
-     * ContentProvider.
-     * @param context Used to access utility methods and the ContentResolver
-     */
-    synchronized public static void syncMovies(final Context context) {
-//        if (NetworkUtils.isConnected(context)) {
-//            NetworkUtils.getMovies(context, new Callback<ResponseModel>() {
-//                @Override
-//                public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-//                    MovieModel[] movies = response.body().getResults();
-//                    ContentValues[] movieValues = MoviesDatabaseUtils.getMoviesContentValues(context, movies);
-//
-//                    if (movieValues != null && movieValues.length != 0) {
-//                        ContentResolver popularMoviesContentResolver = context.getContentResolver();
-//
-//                        popularMoviesContentResolver.bulkInsert(
-//                                MoviesContract.MovieEntry.CONTENT_URI,
-//                                movieValues
-//                        );
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ResponseModel> call, Throwable t) {
-//
-//                }
-//            });
-//
-//        }
+    synchronized public static void addMovie(final Context context, MovieModel movie) {
+        ContentValues movieValues = MoviesDatabaseUtils.getMovieContentValues(movie);
+        ContentResolver popularMoviesContentResolver = context.getContentResolver();
+
+        popularMoviesContentResolver.insert(
+                MoviesContract.MovieEntry.CONTENT_URI,
+                movieValues
+        );
+    }
+
+    synchronized public static void deleteMovie(final Context context, int id) {
+        ContentResolver popularMoviesContentResolver = context.getContentResolver();
+
+        popularMoviesContentResolver.delete(
+                MoviesContract.buildMovieUriWithId(id),
+                null,
+                null
+        );
     }
 }

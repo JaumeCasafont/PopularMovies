@@ -16,12 +16,15 @@
 package com.jcr.popularmovies.data.database;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+
+import static com.jcr.popularmovies.data.database.MoviesContract.MovieEntry.TABLE_NAME;
 
 /**
  * This class serves as the ContentProvider for all of Sunshine's data. This class allows us to
@@ -33,7 +36,7 @@ public class MoviesProvider extends ContentProvider {
     public static final int CODE_MOVIES_WITH_ID = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private MoviesDbHelper mOpenHelper;
+    private MoviesDbHelper mMoviesDbHelper;
 
     /**
      * Creates the UriMatcher that will match each URI to the CODE_MOVIES and
@@ -53,13 +56,13 @@ public class MoviesProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new MoviesDbHelper(getContext());
+        mMoviesDbHelper = new MoviesDbHelper(getContext());
         return true;
     }
 
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
 
         switch (sUriMatcher.match(uri)) {
 
@@ -68,7 +71,7 @@ public class MoviesProvider extends ContentProvider {
                 int rowsInserted = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(MoviesContract.MovieEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(TABLE_NAME, null, value);
                         if (_id != -1) {
                             rowsInserted++;
                         }
@@ -101,8 +104,8 @@ public class MoviesProvider extends ContentProvider {
                 String movieId = uri.getLastPathSegment();
                 String[] selectionArguments = new String[]{movieId};
 
-                cursor = mOpenHelper.getReadableDatabase().query(
-                        MoviesContract.MovieEntry.TABLE_NAME,
+                cursor = mMoviesDbHelper.getReadableDatabase().query(
+                        TABLE_NAME,
                         projection,
                         MoviesContract.MovieEntry.COLUMN_ID + " = ? ",
                         selectionArguments,
@@ -114,8 +117,8 @@ public class MoviesProvider extends ContentProvider {
             }
 
             case CODE_MOVIES: {
-                cursor = mOpenHelper.getReadableDatabase().query(
-                        MoviesContract.MovieEntry.TABLE_NAME,
+                cursor = mMoviesDbHelper.getReadableDatabase().query(
+                        TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -137,15 +140,17 @@ public class MoviesProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int numRowsDeleted;
-        if (null == selection) selection = "1";
 
         switch (sUriMatcher.match(uri)) {
 
-            case CODE_MOVIES:
-                numRowsDeleted = mOpenHelper.getWritableDatabase().delete(
-                        MoviesContract.MovieEntry.TABLE_NAME,
-                        selection,
-                        selectionArgs);
+            case CODE_MOVIES_WITH_ID:
+                String movieId = uri.getLastPathSegment();
+                String[] selectionArguments = new String[]{movieId};
+
+                numRowsDeleted = mMoviesDbHelper.getWritableDatabase().delete(
+                        TABLE_NAME,
+                        MoviesContract.MovieEntry.COLUMN_ID + " = ?",
+                        selectionArguments);
 
                 break;
 
@@ -167,7 +172,25 @@ public class MoviesProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        throw new RuntimeException("Not implemented yet, use bulkInsert");
+        final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        Uri returnUri;
+
+        switch (match) {
+            case CODE_MOVIES:
+                long id = db.insert(TABLE_NAME, null, values);
+                if ( id > 0 ) {
+                    returnUri = ContentUris.withAppendedId(MoviesContract.MovieEntry.CONTENT_URI, id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
     @Override
