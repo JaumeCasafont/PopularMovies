@@ -22,6 +22,9 @@ import com.jcr.popularmovies.databinding.ActivityDetailBinding;
 import com.jcr.popularmovies.ui.OnLoadFromRepositoryCallback;
 import com.jcr.popularmovies.ui.list.MainActivity;
 
+import static com.jcr.popularmovies.ui.detail.VideosAdapter.YOUTUBE_APP_PATH;
+import static com.jcr.popularmovies.ui.detail.VideosAdapter.YOUTUBE_WEB_PATH;
+
 public class DetailActivity extends AppCompatActivity implements VideosAdapter.VideosAdapterClickHandler {
 
     private static final String VIDEOS_KEY = "videos";
@@ -225,9 +228,9 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
 
     @Override
     public void onClick(String videoKey) {
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoKey));
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_APP_PATH + videoKey));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + videoKey));
+                Uri.parse(YOUTUBE_WEB_PATH + videoKey));
         try {
             startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {

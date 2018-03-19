@@ -1,17 +1,24 @@
 package com.jcr.popularmovies.ui.detail;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.data.network.models.VideoModel;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdapterViewHolder> {
+
+    public static final String YOUTUBE_APP_PATH = "vnd.youtube:";
+    public static final String YOUTUBE_WEB_PATH = "http://www.youtube.com/watch?v=";
 
     private final Context mContext;
     private final VideosAdapterClickHandler mClickHandler;
@@ -56,13 +63,31 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
 
         final TextView videoName;
         final View separatorView;
+        final ImageView shareIcon;
 
         public VideosAdapterViewHolder(View itemView) {
             super(itemView);
 
             videoName = itemView.findViewById(R.id.video_name_tv);
             separatorView = itemView.findViewById(R.id.video_item_separator);
+            shareIcon = itemView.findViewById(R.id.share_icon);
             itemView.setOnClickListener(this);
+            shareIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent shareMovieVideoIntent = createShareMovieVideoIntent();
+                    mContext.startActivity(shareMovieVideoIntent);
+                }
+            });
+        }
+
+        private Intent createShareMovieVideoIntent() {
+            Intent shareIntent = ShareCompat.IntentBuilder.from((Activity) mContext)
+                    .setType("text/plain")
+                    .setText(YOUTUBE_WEB_PATH + mVideos[getAdapterPosition()].getKey())
+                    .getIntent();
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            return shareIntent;
         }
 
         @Override

@@ -16,12 +16,22 @@
 
     <TextView
         android:id="@+id/video_name_tv"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_margin_horizontal_big"
         android:layout_marginTop="@dimen/activity_margin_vertical_medium"
         android:layout_marginBottom="@dimen/activity_margin_vertical_medium"
         app:layout_constraintStart_toEndOf="@id/play_iv"
+        app:layout_constraintEnd_toStartOf="@+id/share_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@id/share_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_share_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
