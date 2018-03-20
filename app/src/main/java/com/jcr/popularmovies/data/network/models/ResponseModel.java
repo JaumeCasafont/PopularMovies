@@ -3,6 +3,8 @@ package com.jcr.popularmovies.data.network.models;
 import com.google.gson.annotations.SerializedName;
 import com.jcr.popularmovies.data.network.models.MovieModel;
 
+import java.util.ArrayList;
+
 public class ResponseModel{
 
 	@SerializedName("page")
@@ -15,7 +17,7 @@ public class ResponseModel{
 	private int totalPages;
 
 	@SerializedName("results")
-	private MovieModel[] results;
+	private ArrayList<MovieModel> results;
 
 	public void setPage(int page){
 		this.page = page;
@@ -33,11 +35,11 @@ public class ResponseModel{
 		return totalPages;
 	}
 
-	public void setResults(MovieModel[] results){
+	public void setResults(ArrayList<MovieModel> results){
 		this.results = results;
 	}
 
-	public MovieModel[] getResults(){
+	public ArrayList<MovieModel> getResults(){
 		return results;
 	}
 

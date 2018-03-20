@@ -13,12 +13,14 @@ import com.jcr.popularmovies.data.network.models.MovieModel;
 import com.jcr.popularmovies.utilities.ImageUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder> {
 
     private final Context mContext;
     private final MoviesAdapterClickHandler mClickHandler;
 
-    private MovieModel[] mMovies;
+    private ArrayList<MovieModel> mMovies;
 
     public MoviesAdapter(@NonNull Context context, MoviesAdapterClickHandler clickHandler) {
         mContext = context;
@@ -35,17 +37,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     @Override
     public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
         Picasso.with(mContext).load(
-                ImageUtils.generatePosterUrl(mMovies[position].getPosterPath()))
+                ImageUtils.generatePosterUrl(mMovies.get(position).getPosterPath()))
                 .into(holder.posterImage);
     }
 
     @Override
     public int getItemCount() {
         if (null == mMovies) return 0;
-        return mMovies.length;
+        return mMovies.size();
     }
 
-    public void addMovies(MovieModel[] movies) {
+    public void addMovies(ArrayList<MovieModel> movies) {
         mMovies = movies;
         notifyDataSetChanged();
     }
@@ -68,7 +70,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(mMovies[adapterPosition]);
+            mClickHandler.onClick(mMovies.get(adapterPosition));
         }
     }
 }

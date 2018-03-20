@@ -8,9 +8,11 @@ import com.jcr.popularmovies.data.MoviesRepository;
 import com.jcr.popularmovies.data.database.MoviesContract;
 import com.jcr.popularmovies.data.network.models.MovieModel;
 
+import java.util.ArrayList;
+
 public final class MoviesDatabaseUtils {
 
-   /* public static ContentValues[] getMoviesContentValues(Context context, MovieModel[] movieModels) {
+   /* public static ContentValues[] getMoviesContentValues(Context context, ArrayList<MovieModel> movieModels) {
         ContentValues[] movieContentValues = new ContentValues[movieModels.length];
         for(int i = 0; i < movieModels.length; i++) {
 
@@ -35,9 +37,9 @@ public final class MoviesDatabaseUtils {
         return movieValues;
     }
 
-    public static MovieModel[] getMoviesFromCursor(Cursor cursor) {
+    public static ArrayList<MovieModel> getMoviesFromCursor(Cursor cursor) {
         int length = cursor.getCount();
-        MovieModel[] movies = new MovieModel[length];
+        ArrayList<MovieModel> movies = new ArrayList<>();
         cursor.moveToFirst();
         for (int i = 0; i < length; i++) {
             MovieModel movie = new MovieModel(
@@ -50,7 +52,7 @@ public final class MoviesDatabaseUtils {
                     cursor.getInt(MoviesRepository.INDEX_COLUMN_ID),
                     cursor.getInt(MoviesRepository.INDEX_COLUMN_FAVOURITE)
             );
-            movies[i] = movie;
+            movies.add(movie);
             cursor.moveToNext();
         }
         return movies;

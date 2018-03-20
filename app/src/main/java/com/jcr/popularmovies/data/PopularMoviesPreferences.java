@@ -30,6 +30,12 @@ public final class PopularMoviesPreferences {
         editor.apply();
     }
 
+    public static int updateToNextPage(Context context) {
+        int nextPage = getCurrentPage(context) + 1;
+        setCurrentPage(context, nextPage);
+        return nextPage;
+    }
+
     public static int getCurrentPage(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(context.getString(R.string.pref_current_page_key), context.getResources().getInteger(R.integer.default_current_page));

@@ -19,6 +19,8 @@ import com.jcr.popularmovies.ui.detail.MoviesDetailsLoaderCallbacks;
 import com.jcr.popularmovies.ui.list.MoviesListLoaderCallbacks;
 import com.jcr.popularmovies.utilities.NetworkUtils;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,7 +76,7 @@ public final class MoviesRepository {
         NetworkUtils.getMovies(moviesService, activity, new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                MovieModel[] movies = response.body().getResults();
+                ArrayList<MovieModel> movies = response.body().getResults();
                 onLoadFinished.onLoad(movies);
             }
 

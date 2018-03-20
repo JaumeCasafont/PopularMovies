@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
+    android:clipChildren="false"
     tools:context="com.jcr.popularmovies.ui.list.MainActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -36,5 +37,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/go_top_btn"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:background="@drawable/button_go_top"
+        android:layout_marginTop="@dimen/activity_margin_vertical_medium"
+        android:elevation="100dp"
+        android:text="@string/button_go_top_text"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:onClick="goTop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
