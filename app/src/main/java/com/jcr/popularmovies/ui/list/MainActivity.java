@@ -20,6 +20,7 @@ import com.jcr.popularmovies.data.network.models.MovieModel;
 import com.jcr.popularmovies.ui.OnLoadFromRepositoryCallback;
 import com.jcr.popularmovies.ui.detail.DetailActivity;
 import com.jcr.popularmovies.ui.settings.SettingsActivity;
+import com.jcr.popularmovies.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             if (!isLoading) {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0
-                        && totalItemCount >= 20) {
+                        && NetworkUtils.isConnected(MainActivity.this)) {
                     PopularMoviesPreferences.updateToNextPage(MainActivity.this);
                     loadData();
                 }
@@ -144,8 +145,23 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     public void onLoad(ArrayList<MovieModel> movies) {
         mLoadingIndicator.setVisibility(View.GONE);
         isLoading = false;
-        mMovies.addAll(movies);
+        addMovies(movies);
         mMoviesAdapter.addMovies(mMovies);
+    }
+
+
+    private void addMovies(final ArrayList<MovieModel> movies) {
+        for (MovieModel movie : movies) {
+            boolean isInArray = false;
+            for (MovieModel movie2 : mMovies) {
+                if (movie.getId() == movie2.getId()) {
+                    isInArray = true;
+                }
+            }
+            if (!isInArray) {
+                mMovies.add(movie);
+            }
+        }
     }
 
     @Override

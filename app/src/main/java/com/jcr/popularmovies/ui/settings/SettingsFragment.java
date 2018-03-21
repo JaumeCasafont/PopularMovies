@@ -9,6 +9,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 import com.jcr.popularmovies.R;
+import com.jcr.popularmovies.data.PopularMoviesPreferences;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -65,6 +66,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         Preference preference = findPreference(key);
         if (null != preference) {
             if (!(preference instanceof CheckBoxPreference)) {
+                PopularMoviesPreferences.setCurrentPage(getContext(), 1);
                 setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
             }
         }
