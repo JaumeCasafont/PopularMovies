@@ -76,8 +76,12 @@ public final class MoviesRepository {
         NetworkUtils.getMovies(moviesService, activity, new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                ArrayList<MovieModel> movies = response.body().getResults();
-                onLoadFinished.onLoad(movies);
+                if (response.body() != null) {
+                    ArrayList<MovieModel> movies = response.body().getResults();
+                    onLoadFinished.onLoad(movies);
+                } else {
+                    onLoadFinished.onError();
+                }
             }
 
             @Override
@@ -97,8 +101,12 @@ public final class MoviesRepository {
             NetworkUtils.getVideos(moviesService, id, new Callback<ResponseVideos>() {
                 @Override
                 public void onResponse(Call<ResponseVideos> call, Response<ResponseVideos> response) {
-                    VideoModel[] videos = response.body().getResults();
-                    onLoadFinished.onLoad(videos);
+                    if (response.body() != null) {
+                        VideoModel[] videos = response.body().getResults();
+                        onLoadFinished.onLoad(videos);
+                    } else {
+                        onLoadFinished.onError();
+                    }
                 }
 
                 @Override
@@ -114,8 +122,12 @@ public final class MoviesRepository {
             NetworkUtils.getReviews(moviesService, id, new Callback<ResponseReviews>() {
                 @Override
                 public void onResponse(Call<ResponseReviews> call, Response<ResponseReviews> response) {
-                    ReviewModel[] reviews = response.body().getResults();
-                    onLoadFinished.onLoad(reviews);
+                    if (response.body() != null) {
+                        ReviewModel[] reviews = response.body().getResults();
+                        onLoadFinished.onLoad(reviews);
+                    } else {
+                        onLoadFinished.onError();
+                    }
                 }
 
                 @Override
