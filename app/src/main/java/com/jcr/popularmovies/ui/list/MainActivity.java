@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     private void onFavoritesClick(MenuItem item) {
-        if (NetworkUtils.isConnected(this)) {
+        if (NetworkUtils.isConnected(this) || !displayingFavorites) {
             switchIcon(item);
             mMovies = new ArrayList<>();
             mMoviesAdapter.addMovies(null);
