@@ -2,6 +2,7 @@ package com.jcr.popularmovies.ui.settings;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.jcr.popularmovies.R;
 

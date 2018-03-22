@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_favorites"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_star_border_24dp"
+        android:title="@string/action_favorites"
+        app:showAsAction="ifRoom" />
 </menu>

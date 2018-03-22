@@ -8,6 +8,8 @@
     <string name="button_go_top_text">GO TOP</string>
     <string name="movie_details">Details</string>
     <string name="action_settings">Settings</string>
+    <string name="action_favorites">Favorites</string>
+    <string name="toast_text">Only favorites available without internet connection</string>
     <string name="vote_average">%s/10</string>
 
     <string name="videos_list_title">Related videos:</string>
@@ -27,4 +29,6 @@
     <string name="pref_sort_criteria_popular_value" translatable="false">popular</string>
 
     <string name="pref_current_page_key" translatable="false">current_page</string>
+
+    <string name="pref_favorites_key" translatable="false">favorites_key</string>
 </resources>

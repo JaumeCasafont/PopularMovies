@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jcr.popularmovies.AppPopularMovies;
 import com.jcr.popularmovies.R;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private Button mGoTopButton;
 
     private boolean isLoading;
+    boolean displayingFavorites = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mMoviesAdapter = new MoviesAdapter(this, this);
         mRecyclerGridView.setAdapter(mMoviesAdapter);
         mRecyclerGridView.addOnScrollListener(recyclerViewOnScrollListener);
+
+        displayingFavorites = !NetworkUtils.isConnected(this) ||
+        PopularMoviesPreferences.isDisplayingFavorites(this);
     }
 
     private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -75,13 +80,17 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             if (!isLoading) {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0
-                        && NetworkUtils.isConnected(MainActivity.this)) {
+                        && !displayingFavorites) {
                     PopularMoviesPreferences.updateToNextPage(MainActivity.this);
                     loadData();
                 }
             }
             int currentPage = PopularMoviesPreferences.getCurrentPage(MainActivity.this);
-            mGoTopButton.setVisibility((dy < 0) && (currentPage > 1)? View.VISIBLE : View.GONE);
+            if ((dy < 0) && (currentPage > 1) && !displayingFavorites) {
+                mGoTopButton.setVisibility(View.VISIBLE);
+            } else {
+                mGoTopButton.setVisibility(View.GONE);
+            }
         }
     };
 
@@ -126,7 +135,10 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sort_criteria_menu, menu);
+        inflater.inflate(R.menu.list_menu, menu);
+        menu.findItem(R.id.action_favorites).setIcon(
+                displayingFavorites ? R.drawable.ic_star_24dp :
+                        R.drawable.ic_star_border_24dp);
         return true;
     }
 
@@ -138,7 +150,34 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             startActivity(startSettingsActivity);
             return true;
         }
+        if (id == R.id.action_favorites) {
+            onFavoritesClick(item);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onFavoritesClick(MenuItem item) {
+        if (NetworkUtils.isConnected(this)) {
+            switchIcon(item);
+            mMovies = new ArrayList<>();
+            mMoviesAdapter.addMovies(null);
+            displayingFavorites = !displayingFavorites;
+            PopularMoviesPreferences.setDisplayingFavorites(this, displayingFavorites);
+            if (displayingFavorites) {
+                AppPopularMovies.getRepository().getFavoriteMoviesFromDB(this, this);
+            } else {
+                loadData();
+            }
+        } else {
+            Toast.makeText(this, getText(R.string.toast_text), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void switchIcon(MenuItem item) {
+        int iconRes = displayingFavorites ?
+                R.drawable.ic_star_border_24dp :
+                R.drawable.ic_star_24dp;
+        item.setIcon(iconRes);
     }
 
     @Override
@@ -148,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         addMovies(movies);
         mMoviesAdapter.addMovies(mMovies);
     }
-
 
     private void addMovies(final ArrayList<MovieModel> movies) {
         for (MovieModel movie : movies) {

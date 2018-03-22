@@ -65,7 +65,7 @@ public final class MoviesRepository {
     }
 
     public void getMovies(FragmentActivity activity, final OnLoadFromRepositoryCallback onLoadFinished) {
-        if (NetworkUtils.isConnected(activity)) {
+        if (NetworkUtils.isConnected(activity) && !PopularMoviesPreferences.isDisplayingFavorites(activity)) {
             getMoviesFromNetwork(activity, onLoadFinished);
         } else {
             getFavoriteMoviesFromDB(activity, onLoadFinished);
@@ -87,7 +87,7 @@ public final class MoviesRepository {
         });
     }
 
-    private void getFavoriteMoviesFromDB(FragmentActivity activity, final OnLoadFromRepositoryCallback onLoadFinished) {
+    public void getFavoriteMoviesFromDB(FragmentActivity activity, final OnLoadFromRepositoryCallback onLoadFinished) {
         MoviesListLoaderCallbacks loaderCallbacks = new MoviesListLoaderCallbacks(activity, onLoadFinished);
         activity.getSupportLoaderManager().initLoader(MOVIES_LIST_LOADER_ID, null, loaderCallbacks);
     }

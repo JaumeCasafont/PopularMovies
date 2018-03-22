@@ -40,4 +40,17 @@ public final class PopularMoviesPreferences {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(context.getString(R.string.pref_current_page_key), context.getResources().getInteger(R.integer.default_current_page));
     }
+
+    public static void setDisplayingFavorites(Context context, boolean isDisplaying) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putBoolean(context.getString(R.string.pref_favorites_key), isDisplaying);
+        editor.apply();
+    }
+
+    public static boolean isDisplayingFavorites(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(context.getString(R.string.pref_favorites_key), false);
+    }
 }
