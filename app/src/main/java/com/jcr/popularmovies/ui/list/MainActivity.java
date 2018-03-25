@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mMovies != null) {
-            outState.putParcelableArrayList(MOVIES_KEY, mMovies);
+            outState.putParcelableArrayList(MOVIES_KEY, mMoviesAdapter.getData());
         }
     }
 
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.containsKey(MOVIES_KEY)) {
             mMovies = savedInstanceState.getParcelableArrayList(MOVIES_KEY);
-            mMoviesAdapter.addMovies(mMovies);
+            mMoviesAdapter.updateMovies(mMovies);
         }
     }
 
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         if (NetworkUtils.isConnected(this) || !displayingFavorites) {
             switchIcon(item);
             mMovies = new ArrayList<>();
-            mMoviesAdapter.addMovies(null);
+            mMoviesAdapter.updateMovies(null);
             displayingFavorites = !displayingFavorites;
             PopularMoviesPreferences.setDisplayingFavorites(this, displayingFavorites);
             if (displayingFavorites) {
@@ -188,22 +188,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     public void onLoad(ArrayList<MovieModel> movies) {
         mLoadingIndicator.setVisibility(View.GONE);
         isLoading = false;
-        addMovies(movies);
-        mMoviesAdapter.addMovies(mMovies);
-    }
-
-    private void addMovies(final ArrayList<MovieModel> movies) {
-        for (MovieModel movie : movies) {
-            boolean isInArray = false;
-            for (MovieModel movie2 : mMovies) {
-                if (movie.getId() == movie2.getId()) {
-                    isInArray = true;
-                }
-            }
-            if (!isInArray) {
-                mMovies.add(movie);
-            }
-        }
+        mMovies.addAll(movies);
+        mMoviesAdapter.updateMovies(mMovies);
     }
 
     @Override
