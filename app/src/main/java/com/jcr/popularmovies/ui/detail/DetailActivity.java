@@ -12,9 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.jcr.popularmovies.AppPopularMovies;
 import com.jcr.popularmovies.R;
 import com.jcr.popularmovies.binding.ActivityDataBindingComponent;
+import com.jcr.popularmovies.data.MoviesRepository;
 import com.jcr.popularmovies.data.network.models.MovieModel;
 import com.jcr.popularmovies.data.network.models.ReviewModel;
 import com.jcr.popularmovies.data.network.models.VideoModel;
@@ -29,6 +29,8 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
 
     private static final String VIDEOS_KEY = "videos";
     private static final String REVIEWS_KEY = "reviews";
+    
+    private MoviesRepository mRepository;
 
     android.databinding.DataBindingComponent dataBindingComponent = new ActivityDataBindingComponent(this);
     ActivityDetailBinding mDetailBinding;
@@ -56,6 +58,8 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
                 setupReviewsList();
             }
         }
+        
+        mRepository = new MoviesRepository();
     }
 
     private void setupVideosList() {
@@ -83,7 +87,7 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
     }
 
     private void setFavoriteIcon(final Menu menu) {
-        AppPopularMovies.getRepository().isFavorite(this, mMovie.getId(),
+        mRepository.isFavorite(this, mMovie.getId(),
                 new OnLoadFromRepositoryCallback<Boolean>() {
                     @Override
                     public void onLoad(Boolean result) {
@@ -115,9 +119,9 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
     private void onFavoriteClick(MenuItem item) {
         switchIcon(item);
         if (isFavorite) {
-            AppPopularMovies.getRepository().deleteMovie(this, mMovie.getId());
+            mRepository.deleteMovie(this, mMovie.getId());
         } else {
-            AppPopularMovies.getRepository().saveMovie(this, mMovie);
+            mRepository.saveMovie(this, mMovie);
         }
         isFavorite = !isFavorite;
     }
@@ -163,7 +167,7 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
     private void loadVideos() {
         if (mVideos == null) {
             mDetailBinding.videosLoadingIndicator.setVisibility(View.VISIBLE);
-            AppPopularMovies.getRepository().getVideos(this, mMovie.getId(),
+            mRepository.getVideos(this, mMovie.getId(),
                     new OnLoadFromRepositoryCallback<VideoModel[]>() {
                         @Override
                         public void onLoad(VideoModel[] result) {
@@ -181,7 +185,7 @@ public class DetailActivity extends AppCompatActivity implements VideosAdapter.V
     private void loadReviews() {
         if (mReviews == null) {
             mDetailBinding.reviewsLoadingIndicator.setVisibility(View.VISIBLE);
-            AppPopularMovies.getRepository().getReviews(this, mMovie.getId(),
+            mRepository.getReviews(this, mMovie.getId(),
                     new OnLoadFromRepositoryCallback<ReviewModel[]>() {
                         @Override
                         public void onLoad(ReviewModel[] result) {

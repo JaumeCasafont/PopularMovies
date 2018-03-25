@@ -14,8 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jcr.popularmovies.AppPopularMovies;
 import com.jcr.popularmovies.R;
+import com.jcr.popularmovies.data.MoviesRepository;
 import com.jcr.popularmovies.data.PopularMoviesPreferences;
 import com.jcr.popularmovies.data.network.models.MovieModel;
 import com.jcr.popularmovies.ui.OnLoadFromRepositoryCallback;
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     public static final String MOVIE_DETAILS_KEY = "movie_key";
     private static final String MOVIES_KEY = "movies";
+    
+    private MoviesRepository mRepository;
 
     private RecyclerView mRecyclerGridView;
     private MoviesAdapter mMoviesAdapter;
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         displayingFavorites = !NetworkUtils.isConnected(this) ||
         PopularMoviesPreferences.isDisplayingFavorites(this);
+        
+        mRepository = new MoviesRepository();
     }
 
     private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -105,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private void loadData() {
         mLoadingIndicator.setVisibility(View.VISIBLE);
         isLoading = true;
-        AppPopularMovies.getRepository().getMovies(this, this);
+        mRepository.getMovies(this, this);
     }
 
     @Override
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             displayingFavorites = !displayingFavorites;
             PopularMoviesPreferences.setDisplayingFavorites(this, displayingFavorites);
             if (displayingFavorites) {
-                AppPopularMovies.getRepository().getFavoriteMoviesFromDB(this, this);
+                mRepository.getFavoriteMoviesFromDB(this, this);
             } else {
                 loadData();
             }
